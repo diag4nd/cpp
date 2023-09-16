@@ -17,9 +17,6 @@ int main()
     cout << **pointer << endl;
     free(*pointer);        
                                                     // Освобождение памяти. Конец задания
-    cout << pointer << endl;
-    cout << *pointer << endl;
-    cout << &number << endl;
 
     return 0;
 }
