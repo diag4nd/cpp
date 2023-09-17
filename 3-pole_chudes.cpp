@@ -109,5 +109,5 @@ int main()
 			putWord(displayWord);
 		}
 	}
-	std::cout << "Конец игры!" << std::endl;
+	std::cout << "Вы угадали слово - " << winWord << "! Поздравляю!" << std::endl;
 }
