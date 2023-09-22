@@ -1,13 +1,12 @@
-﻿#include <iostream>
+#include <iostream>
 #include <string>
 #include <windows.h>
 
 std::string getWord      ()
 {
-	std::string word;
-
+	char word[256];
 	std::cout << "Введите слово: ";
-	std::cin  >> word;
+	std::cin.getline(word, 256, '\n');
 	return word;
 }
 
@@ -33,18 +32,18 @@ bool        isClosed     (char letter)
 	return false;
 }
 
-void        changeLetter (std::string &displayWord, char letter, int index)
+void        changeLetter (std::string& displayWord, char letter, int index)
 {
 	displayWord[index] = letter;
 }
 
-void        openLetter   (std::string winWord, std::string &displayWord, char letter)
+void        openLetter   (std::string winWord, std::string& displayWord, char letter)
 {
 	for (int i = 0; i < winWord.length(); i++)
 	{
 		if ((winWord[i] == letter) and (isClosed(displayWord[i])))
 		{
-				changeLetter(displayWord, letter, i);
+			changeLetter(displayWord, letter, i);
 		}
 	}
 	std::cout << "Угадали!" << std::endl << std::endl << std::endl;
@@ -80,6 +79,17 @@ bool        isRight      (std::string word, char answer)
 	return false;
 }
 
+bool        isString     (std::string word)
+{
+	for (int i = 0; i < word.length(); i++)
+	{
+		if (not ((word[i] >= 'a') and (word[i] <= 'z') or ((word[i] >= 'A') and (word[i] <= 'Z')) or ((word[i] >= 'а') and (word[i] <= 'я')) or ((word[i] >= 'А') and (word[i] <= 'Я'))) )
+		{
+			return false;
+		}
+	}
+	return true;
+}
 
 int main()
 {
@@ -88,11 +98,13 @@ int main()
 	SetConsoleOutputCP(1251);
 
 	std::string winWord;
-
 	winWord = getWord();
+	while (not isString(winWord))
+	{
+		winWord = getWord();
+	}
 
-	std::string displayWord (winWord.length(), '-');
-
+	std::string displayWord(winWord.length(), '-');
 	putWord(displayWord);
 
 	char answer;
