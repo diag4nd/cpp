@@ -1,6 +1,7 @@
-﻿#include <iostream>
+#include <iostream>
 #include <string>
 #include <cmath>
+#include <stdlib.h>
 #define N 14
 
 int main()
@@ -30,9 +31,12 @@ int main()
     }
 
     int randArray[3]{ 0, 11111111, 22222222 };
+    srand(time(NULL));
     int i = rand() % 3;
     summ  = pow(summ, month);
     summ += randArray[i];
+
+
     std::cout << summ;
     return 0;
 }
