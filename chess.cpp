@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <array>
 #include <cstdlib>
 #include <ctime>
@@ -8,9 +8,35 @@
 #include <stdlib.h>
 #include <string>
 
+bool isPossible(char name, std::string direct)
+{
+	return true;
+}
+
+int getXPath(std::string direct)
+{
+	int x = direct[0] - 'a';
+	return x;
+}
+
+int getYPath(std::string direct)
+{
+	int y = direct[1] - '1';
+	return 7 - y;
+}
+
 void move(char name, std::string direct, std::array<std::array<char, 8>, 8>& board)
 {
-
+	int i, j, i0, j0;
+	if (isPossible(name, direct))
+	{
+		i = getXPath(direct);
+		j = getYPath(direct);
+		i0 = findX(board, name);
+		j0 = findY(board, name);
+		board[i0][j0] = '.';
+		board[i][j] = name;
+	}
 }
 
 bool isCorrect(std::string line)
@@ -43,55 +69,29 @@ std::string getAnswer()
 	return ans;
 }
 
-int findBKx(std::array<std::array<char, 8>, 8>& board)
+int findX(std::array<std::array<char, 8>, 8>& board, char name)
 {
+	int x;
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++)
 		{
-			if (board[i][j] == 'P')
+			if (board[i][j] == name)
 			{
-				return i;
+				x = i;
 			}
 		}
 	}
+	return x;
 }
 
-int findBKy(std::array<std::array<char, 8>, 8>& board)
+int findY(std::array<std::array<char, 8>, 8>& board, char name)
 {
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++)
 		{
-			if (board[i][j] == 'P')
-			{
-				return j;
-			}
-		}
-	}
-}
-
-int findWKx(std::array<std::array<char, 8>, 8>& board)
-{
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			if (board[i][j] == 'K')
-			{
-				return i;
-			}
-		}
-	}
-}
-
-int findWKy(std::array<std::array<char, 8>, 8>& board)
-{
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			if (board[i][j] == 'K')
+			if (board[i][j] == name)
 			{
 				return j;
 			}
@@ -101,8 +101,8 @@ int findWKy(std::array<std::array<char, 8>, 8>& board)
 
 bool isBKSuitable(std::array<std::array<char, 8>, 8>& board, int x, int y)
 {
-	int BKx = findBKx(board);
-	int BKy = findBKy(board);
+	int BKx = findX(board, 'P');
+	int BKy = findY(board, 'P');
 	if ((abs(BKx - x) <= 1) and (abs(BKy - y) <= 1))
 	{
 		return false;
@@ -112,8 +112,8 @@ bool isBKSuitable(std::array<std::array<char, 8>, 8>& board, int x, int y)
 
 bool isWKSuitable(std::array<std::array<char, 8>, 8>& board, int x, int y)
 {
-	int WKx = findWKx(board);
-	int WKy = findWKy(board);
+	int WKx = findX(board, 'K');
+	int WKy = findY(board, 'K');
 	if ((abs(WKx - x) <= 1) and (abs(WKy - y) <= 1))
 	{
 		return false;
