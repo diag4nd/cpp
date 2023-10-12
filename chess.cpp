@@ -52,8 +52,8 @@ int main()
   // Белая Ладья   - это 'T'
   // Пустое поле   - это '.'
   setDots(board);
-  setWhiteTower(board);
   setWhiteKing(board);
+  setWhiteTower(board);
   setBlackKing(board);
   showBoard(board);
 
@@ -66,34 +66,30 @@ int main()
 
 int findX(std::array<std::array<char, 8>, 8>& board, char name)
 {
-  int x;
   for (int i = 0; i < 8; i++)
   {
     for (int j = 0; j < 8; j++)
     {
       if (board[i][j] == name)
       {
-        x = j;
+        return j;
       }
     }
   }
-  return x;
 }
 
 int findY(std::array<std::array<char, 8>, 8>& board, char name)
 {
-  int y;
   for (int i = 0; i < 8; i++)
   {
     for (int j = 0; j < 8; j++)
     {
       if (board[i][j] == name)
       {
-        y = i;
+        return i;
       }
     }
   }
-  return y;
 }
 
 int getXPath(std::string direct)
@@ -172,6 +168,8 @@ void move(std::array<std::array<char, 8>, 8> &board, char name, std::string dire
   else
   {
     std::cout << "Incorrect move" << std::endl;
+    direct = getAnswer();
+    move(board, name, direct);
   }
 }
 
@@ -183,7 +181,7 @@ bool isCorrect(std::string line)
     {
       if ((line[1] >= '1') and ((line[1] <= '8')))
       {
-        std::cout << "Correct answer" << std::endl;
+        std::cout << "Correct answer" << std::endl << std::endl;
         return true;
       }
     }
@@ -291,6 +289,7 @@ void setBlackKing(std::array<std::array<char, 8>, 8> &board)
   
   int blackKingX = x;
   int blackKingY = y;
+  std::cout << 'P' << blackKingX << blackKingY << "-" << findX(board, 'P') << findY(board, 'P') << std::endl;
   board[blackKingX][blackKingY] = 'P';
 }
 
@@ -298,15 +297,9 @@ void setWhiteKing(std::array<std::array<char, 8>, 8> &board)
 {
   int x = getRandPosition();
   int y = getRandPosition();
-  int whiteTowerX = findX(board, 'T');
-  int whiteTowerY = findY(board, 'T');
-  while ( (x == whiteTowerX) and (y == whiteTowerY) )
-  {
-    x = getRandPosition();
-    y = getRandPosition();
-  }
   int whiteKingX = x;
   int whiteKingY = y;
+  std::cout << 'K' << whiteKingX << whiteKingY << "-" << findX(board, 'K') << findY(board, 'K') << std::endl;
   board[whiteKingX][whiteKingY] = 'K';
 }
 
@@ -314,8 +307,18 @@ void setWhiteTower(std::array<std::array<char, 8>, 8>& board)
 {
   int x = getRandPosition();
   int y = getRandPosition();
+  int whiteKingX = findX(board, 'K');
+  int whiteKingY = findY(board, 'K');
+  
+  while ( (x == whiteKingX) and (y == whiteKingY) )
+  {
+    x = getRandPosition();
+    y = getRandPosition();
+  }
+  
   int whiteTowerX = x;
   int whiteTowerY = y;
+  std::cout << 'T' << whiteTowerX << whiteTowerY << "-" << findX(board, 'K') << findY(board, 'K') << std::endl;
   board[whiteTowerX][whiteTowerY] = 'T';
 }
 
