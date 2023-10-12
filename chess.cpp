@@ -283,7 +283,7 @@ void setBlackKing(std::array<std::array<char, 8>, 8> &board)
   int whiteKingX = findX(board, 'K');
   int whiteKingY = findY(board, 'K');
   
-  while ( ( isWKSuitable(board, x, y) ) or ( isWTSuitable(board, x, y) ) ) 
+  while ( (not isWKSuitable(board, x, y) ) or (not isWTSuitable(board, x, y) ) ) 
   {
     x = getRandPosition();
     y = getRandPosition();
