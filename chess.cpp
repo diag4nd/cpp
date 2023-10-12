@@ -8,6 +8,36 @@
 #include <stdlib.h>
 #include <string>
 
+int findX(std::array<std::array<char, 8>, 8>& board, char name)
+{
+	int x;
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			if (board[i][j] == name)
+			{
+				x = i;
+			}
+		}
+	}
+	return x;
+}
+
+int findY(std::array<std::array<char, 8>, 8>& board, char name)
+{
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			if (board[i][j] == name)
+			{
+				return j;
+			}
+		}
+	}
+}
+
 bool isPossible(char name, std::string direct)
 {
 	return true;
@@ -68,37 +98,6 @@ std::string getAnswer()
 	}
 	return ans;
 }
-
-int findX(std::array<std::array<char, 8>, 8>& board, char name)
-{
-	int x;
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			if (board[i][j] == name)
-			{
-				x = i;
-			}
-		}
-	}
-	return x;
-}
-
-int findY(std::array<std::array<char, 8>, 8>& board, char name)
-{
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			if (board[i][j] == name)
-			{
-				return j;
-			}
-		}
-	}
-}
-
 bool isBKSuitable(std::array<std::array<char, 8>, 8>& board, int x, int y)
 {
 	int BKx = findX(board, 'P');
