@@ -25,6 +25,8 @@ bool isCorrect(std::string line);
 
 std::string getAnswer();
 
+std::string getWhiteAnswer(std::array<std::array<char, 8>, 8>& board, char name);
+
 bool isBKSuitable(std::array<std::array<char, 8>, 8>& board, int x, int y);
 
 bool isWKSuitable(std::array<std::array<char, 8>, 8>& board, int x, int y);
@@ -66,6 +68,22 @@ int main()
         answer = getAnswer();
         move(board, 'P', answer);
         showBoard(board);
+        
+        int coin = rand()%2;
+        char figure;
+        if (coin == 0)
+        {
+          figure = 'K';
+        }
+        else
+        {
+          figure = 'R';
+        }
+        answer = getWhiteAnswer(board, figure);
+        std::cout << "White turn: ";
+        std::cout << figure << answer << std::endl;
+        move(board, figure, answer);
+        showBoard(board);
     }
     return 0;
 }
@@ -88,7 +106,6 @@ int findX(std::array<std::array<char, 8>, 8> &board, char name)
         {
             if (board[i][j] == name)
             {
-                //std::cout << 'x' << name << i << j << std::endl;
                 x = j;
             }
         }
@@ -154,7 +171,7 @@ bool isPossible(std::array<std::array<char, 8>, 8>& board, char name, std::strin
     }
     else
     {
-        if ((isWKSuitable(board, x, y)) and (isBKSuitable(board, x, y)) and (not isBKSuitable(board, x, y)))
+        if ((isWKSuitable(board, x, y)) and (isBKSuitable(board, x, y)) and (not isWRSuitable(board, x, y)))
         {
             return true;
         }
@@ -190,7 +207,6 @@ bool isCorrect(std::string line)
         {
             if ((line[1] >= '1') and ((line[1] <= '8')))
             {
-               std::cout << "Correct answer" << std::endl;
                return true;
             }
         }
@@ -212,6 +228,22 @@ std::string getAnswer()
         return getAnswer();
     }
     return ans;
+}
+
+std::string getWhiteAnswer(std::array<std::array<char, 8>, 8>& board, char name)
+{
+  std::string ans = "00";
+  int x = getRandPosition();
+  int y = getRandPosition();
+  char wx = 'a' + x;
+  char wy = '1' + y;
+  ans[0] = wx;
+  ans[1] = wy;
+  while (not isPossible(board, name, ans))
+  {
+    ans = getWhiteAnswer(board, name);
+  }
+  return ans;
 }
 
 bool isBKSuitable(std::array<std::array<char, 8>, 8>& board, int x, int y)
@@ -339,8 +371,6 @@ void setBlackKing(std::array<std::array<char, 8>, 8>& board)
 {
     int x = getRandPosition();
     int y = getRandPosition();
-    //std::cout << "P-y:" << y << " x:" << x << std::endl;
-    //std::cout << "START" << std::endl;
     int whiteKingX = findX(board, 'K');
     int whiteKingY = findY(board, 'K');
     int whiteTowerX = findX(board, 'R');
@@ -350,12 +380,9 @@ void setBlackKing(std::array<std::array<char, 8>, 8>& board)
     {
         x = getRandPosition();
         y = getRandPosition();
-        //std::cout << "P-y:" << y << " x:" << x << std::endl;
     }
     int blackKingX = x;
     int blackKingY = y;
-    //std::cout << 'P' << blackKingY << blackKingX << std::endl;
-    //std::cout << "END" << std::endl;
     board[blackKingY][blackKingX] = 'P';
 }
 
@@ -365,7 +392,6 @@ void setWhiteKing(std::array<std::array<char, 8>, 8>& board)
     int y = getRandPosition();
     int whiteKingX = x;
     int whiteKingY = y;
-    //std::cout << 'K' << whiteKingY << whiteKingX << std::endl;
     board[whiteKingY][whiteKingX] = 'K';
 }
 
@@ -384,6 +410,5 @@ void setWhiteRook(std::array<std::array<char, 8>, 8>& board)
 
     int whiteTowerX = x;
     int whiteTowerY = y;
-    //std::cout << 'T' << whiteTowerY << whiteTowerX << std::endl;
     board[whiteTowerY][whiteTowerX] = 'R';
 }
