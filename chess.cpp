@@ -29,7 +29,7 @@ bool isBKSuitable(std::array<std::array<char, 8>, 8>& board, int x, int y);
 
 bool isWKSuitable(std::array<std::array<char, 8>, 8>& board, int x, int y);
 
-bool isWTSuitable(std::array<std::array<char, 8>, 8>& board, int x, int y);
+bool isWRSuitable(std::array<std::array<char, 8>, 8>& board, int x, int y);
 
 int getRandPosition();
 
@@ -41,21 +41,22 @@ void setBlackKing(std::array<std::array<char, 8>, 8>& board);
 
 void setWhiteKing(std::array<std::array<char, 8>, 8>& board);
 
-void setWhiteTower(std::array<std::array<char, 8>, 8>& board);
+void setWhiteRook(std::array<std::array<char, 8>, 8>& board);
+
 
 int main()
 {
     std::srand(std::time(NULL));
     std::array<std::array<char, 8>, 8> board;
 
-    // Будем считать, что
+    // Будем считать, что:
     // Черный Король - это 'P'
     // Белый Король  - это 'K'
-    // Белая Ладья   - это 'T'
+    // Белая Ладья   - это 'R'
     // Пустое поле   - это '.'
     setDots(board);
     setWhiteKing(board);
-    setWhiteTower(board);
+    setWhiteRook(board);
     setBlackKing(board);
     showBoard(board);
 
@@ -69,7 +70,7 @@ int main()
     return 0;
 }
 
-bool isEmpty(std::array<std::array<char, 8>, 8>& board, int x, int y)
+bool isEmpty(std::array<std::array<char, 8>, 8>& board, int y, int x)
 {
     if (board[y][x] == '.')
     {
@@ -137,7 +138,7 @@ bool isPossible(std::array<std::array<char, 8>, 8>& board, char name, std::strin
     }
     else if (name == 'P')
     {
-        if ((isWKSuitable(board, x, y)) and (isWTSuitable(board, x, y)) and (not isBKSuitable(board, x, y)) )
+        if ( (isWKSuitable(board, x, y)) and (isWRSuitable(board, x, y)) and (not isBKSuitable(board, x, y)) )
         {
             return true;
         }
@@ -145,25 +146,17 @@ bool isPossible(std::array<std::array<char, 8>, 8>& board, char name, std::strin
     }
     else if (name == 'K')
     {
-        if ((isBKSuitable(board, x, y)) and (isWTSuitable(board, x, y)))
+        if ((isBKSuitable(board, x, y)) and (isWRSuitable(board, x, y)) and (not isWKSuitable(board, x, y)))
         {
-            if (not isWKSuitable(board, x, y))
-            {
-                return true;
-            }
-            return false;
+            return true;
         }
         return false;
     }
-    else if (name == 'T')
+    else
     {
-        if ((isWKSuitable(board, x, y)) and (isBKSuitable(board, x, y)))
+        if ((isWKSuitable(board, x, y)) and (isBKSuitable(board, x, y)) and (not isBKSuitable(board, x, y)))
         {
-            if (not isWTSuitable(board, x, y))
-            {
-                return true;
-            }
-            return false;
+            return true;
         }
         return false;
     }
@@ -197,13 +190,16 @@ bool isCorrect(std::string line)
         {
             if ((line[1] >= '1') and ((line[1] <= '8')))
             {
-                std::cout << "Correct answer" << std::endl << std::endl;
-                return true;
+               std::cout << "Correct answer" << std::endl;
+               return true;
             }
         }
     }
-    std::cout << "Incorrect answer" << std::endl;
-    return false;
+    else
+    {
+        std::cout << "Incorrect answer" << std::endl;
+        return false;
+    }
 }
 
 std::string getAnswer()
@@ -213,8 +209,7 @@ std::string getAnswer()
     std::getline(std::cin, ans);
     while (not isCorrect(ans))
     {
-        std::cout << "Black turn: ";
-        std::getline(std::cin, ans);
+        return getAnswer();
     }
     return ans;
 }
@@ -241,25 +236,25 @@ bool isWKSuitable(std::array<std::array<char, 8>, 8>& board, int x, int y)
     return true;
 }
 
-bool isWTSuitable(std::array<std::array<char, 8>, 8>& board, int x, int y)
+bool isWRSuitable(std::array<std::array<char, 8>, 8>& board, int x, int y)
 {
-    int WTx = findX(board, 'T');
-    int WTy = findY(board, 'T');
+    int WRx = findX(board, 'R');
+    int WRy = findY(board, 'R');
     int flag;
-    if ((x == WTx) or (y == WTy))
+    if ((x == WRx)  or (y == WRy))
     {
-        if (x == WTx)
+        if (x == WRx)
         {
             int imin{ 0 }, imax{ 0 };
-            if (WTy < y)
+            if (WRy < y)
             {
-                imin = WTy;
+                imin = WRy;
                 imax = y;
             }
             else
             {
                 imin = y;
-                imax = WTy;
+                imax = WRy;
             }
             flag = 0;
             for (int i = imin + 1; i < imax; i++)
@@ -271,18 +266,18 @@ bool isWTSuitable(std::array<std::array<char, 8>, 8>& board, int x, int y)
                 }
             }
         }
-        else if (y == WTy)
+        else if (y == WRy)
         {
             int jmin{ 0 }, jmax{ 0 };
-            if (WTx < x)
+            if (WRx < x)
             {
-                jmin = WTx;
+                jmin = WRx;
                 jmax = x;
             }
             else
             {
                 jmin = x;
-                jmax = WTx;
+                jmax = WRx;
             }
             flag = 0;
             for (int j = jmin + 1; j < jmax; j++)
@@ -348,10 +343,10 @@ void setBlackKing(std::array<std::array<char, 8>, 8>& board)
     //std::cout << "START" << std::endl;
     int whiteKingX = findX(board, 'K');
     int whiteKingY = findY(board, 'K');
-    int whiteTowerX = findX(board, 'T');
-    int whiteTowerY = findY(board, 'T');
+    int whiteTowerX = findX(board, 'R');
+    int whiteTowerY = findY(board, 'R');
 
-    while ( (not isEmpty(board, x, y)) or (not isWKSuitable(board, x, y)) or (not isWTSuitable(board, x, y)) )
+    while ( (not isEmpty(board, x, y)) or (not isWKSuitable(board, x, y)) or (not isWRSuitable(board, x, y)) )
     {
         x = getRandPosition();
         y = getRandPosition();
@@ -374,7 +369,7 @@ void setWhiteKing(std::array<std::array<char, 8>, 8>& board)
     board[whiteKingY][whiteKingX] = 'K';
 }
 
-void setWhiteTower(std::array<std::array<char, 8>, 8>& board)
+void setWhiteRook(std::array<std::array<char, 8>, 8>& board)
 {
     int x = getRandPosition();
     int y = getRandPosition();
@@ -390,5 +385,5 @@ void setWhiteTower(std::array<std::array<char, 8>, 8>& board)
     int whiteTowerX = x;
     int whiteTowerY = y;
     //std::cout << 'T' << whiteTowerY << whiteTowerX << std::endl;
-    board[whiteTowerY][whiteTowerX] = 'T';
+    board[whiteTowerY][whiteTowerX] = 'R';
 }
