@@ -26,6 +26,7 @@ class Provider
     std::string winWord;
     std::string screenWord;
     std::string answer;
+    std::string answerLog{""};
   public:
     std::string getWinWord() const {return winWord;};
     std::string getScreenWord() const {return screenWord;};
@@ -35,6 +36,8 @@ class Provider
     std::string getAnswer() const {return answer;};
     bool isCorrectAnswer();
     bool isRightAnswer();
+    bool isUsedAnswer();
+    void rememberAnswer();
     bool isFinished();
     void openLetter();
 };
@@ -51,12 +54,13 @@ class Screen
     void showWin();
     void showStart();
     void showEnd();
+    void showUsed();
 };  
 
 int main()
 {
     SetConsoleCP(1251);
-	SetConsoleOutputCP(1251);
+    SetConsoleOutputCP(1251);
     
     Game poleChudes;
     Provider jacub;
@@ -83,26 +87,34 @@ int main()
       {
         screen.askAnswer();
         jacub.setAnswer();
-        while (not jacub.isCorrectAnswer())
+        while (not (jacub.isCorrectAnswer()) )
         {
           screen.showError();
           screen.askAnswer();
           jacub.setAnswer();
         }
-        if(jacub.isRightAnswer())
+        if(not jacub.isUsedAnswer())
         {
-          screen.showCorrect();
-          jacub.openLetter();
+          jacub.rememberAnswer();
+          if(jacub.isRightAnswer())
+          {
+            screen.showCorrect();
+            jacub.openLetter();
+          }
+          else
+          {
+            screen.showIncorrect();
+          }
+      
+          screen.showWord( jacub.getScreenWord() );
+          if(jacub.isFinished())
+          {
+            poleChudes.checkGame();
+          }
         }
         else
         {
-          screen.showIncorrect();
-        }
-      
-        screen.showWord( jacub.getScreenWord() );
-        if(jacub.isFinished())
-        {
-          poleChudes.checkGame();
+          screen.showUsed();
         }
       }
       screen.showWin();
@@ -179,6 +191,23 @@ bool Provider::isRightAnswer()
   return false;
 }
 
+bool Provider::isUsedAnswer()
+{
+  for(int i=0; i<answerLog.length(); i++)
+  {
+    if( answerLog[i] == answer[0] )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+void Provider::rememberAnswer()
+{
+  answerLog += answer[0];
+}
+
 bool Provider::isFinished()
 {
   for(int i=0; i<winWord.length(); i++)
@@ -245,4 +274,9 @@ void Screen::showStart()
 void Screen::showEnd()
 {
   std::cout << "Игра закончилась!" << std::endl << std::endl;
+}
+
+void Screen::showUsed()
+{
+  std::cout << "Такой ответ уже был!" << std::endl << std::endl;
 }
