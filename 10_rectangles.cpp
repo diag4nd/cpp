@@ -4,18 +4,14 @@
 class Rectangle
 {
   private:
-    double xc;
-    double yc;
-    double width;
-    double height;
+    double const xc;
+    double const yc;
+    double const width;
+    double const height;
   public:
-    Rectangle(double x = 0, double y = 0, double a = 2, double b = 2)
-    {
-      xc= x;
-      yc = y;
-      width = a;
-      height = b;
-    }
+    Rectangle(double x, double y, double a, double b)
+      : xc{x}, yc{y}, width{a}, height{b}
+    {}
     
     double getX(){return xc;};
     double getY(){return yc;};
@@ -41,7 +37,7 @@ bool intersects(Rectangle r1, Rectangle r2);
 
 int main()
 {
-    Rectangle r1, r2(-0.5, 0.5, 0.001, 0.001);
+    Rectangle r1(0, 0, 2, 2), r2(-0.5, 0.5, 0.001, 0.001);
     if(intersects(r1, r2))
     {
       std::cout << "Yes" << std::endl;
@@ -121,4 +117,4 @@ bool intersects(Rectangle r1, Rectangle r2)
         }
         return false;
       }
-    }
+}
