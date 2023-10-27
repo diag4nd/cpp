@@ -1,12 +1,19 @@
 #include <iostream>
 #include <cmath>
-#include "rectangle_0.cpp"
+#include "rectangle.cpp"
+#include <fstream>
+#include <vector>
+#include <string>
 
-bool intersects(Rectangle r1, Rectangle r2);
+bool intersects(Rectangle &r1, Rectangle &r2);
+
+std::vector<double> getParams(std::string fileName);
 
 int main()
 {
-    Rectangle r1(0, 0, 2, 2), r2(-0.5, 0.5, 0.001, 0.001);
+    std::vector<double> params = getParams("params.txt");
+
+    Rectangle r1(params[0], params[1], params[2], params[3]), r2(params[4], params[5], params[6], params[7]);
     if (intersects(r1, r2))
     {
         std::cout << "Yes" << std::endl;
@@ -18,7 +25,7 @@ int main()
     return 0;
 }
 
-bool intersects(Rectangle r1, Rectangle r2)
+bool intersects(Rectangle &r1, Rectangle &r2)
 {
     double x1 = r1.getX();
     double y1 = r1.getY();
@@ -86,4 +93,33 @@ bool intersects(Rectangle r1, Rectangle r2)
         }
         return false;
     }
+}
+
+std::vector<double> getParams(std::string fileName)
+{
+    std::vector<double> params(8);
+    std::string line;
+    int j{ 0 }, l{ 0 }, r{ 0 };
+    std::ifstream in(fileName);
+    if (in.is_open())
+    {
+        while (std::getline(in, line))
+        {
+            line.append(1, '\n');
+            for (int i = 0; i < line.length(); i++)
+            {
+                if ((line[i] == ' ') or (line[i] == '\n'))
+                {
+                    r = i;
+                    params[j] = std::stod(line.substr(l, r));
+                    j++;
+                    l = r + 1;
+                }
+            }
+            l = 0;
+            r = 0;
+        }
+    }
+    in.close();
+    return params;
 }
